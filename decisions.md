@@ -252,6 +252,38 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
+### Decision 29: Rule-based failure classification first
+
+**Decision:** Classify failures using deterministic rules first. Only ask the LLM for 'unknown' cases.
+
+**Reasoning:** Rules are fast, deterministic, and testable. The LLM is only used when rules can't classify. The LLM can never reclassify to pre_existing (safety constraint).
+
+---
+
+### Decision 30: Approval payload hashing
+
+**Decision:** Approvals are valid only for the exact payload hash. The payload is hashed with SHA-256 and the hash is stored.
+
+**Reasoning:** Prevents approval replay attacks. An approval for one payload cannot be used for a different payload.
+
+---
+
+### Decision 31: Kill switch as in-memory flag
+
+**Decision:** The kill switch is an in-memory flag checked at every node boundary and sandbox poll.
+
+**Reasoning:** A database flag would require a DB read on every check. An in-memory flag is fast and can be activated instantly. The flag is mirrored to Redis for multi-process visibility.
+
+---
+
+### Decision 32: Deterministic report templates
+
+**Decision:** All report content is generated from stored evidence by deterministic templates. Model-written summaries appear only in a separately labeled narrative section.
+
+**Reasoning:** Ensures the report is reproducible from evidence (WF-10). Prevents the LLM from influencing the verification report.
+
+---
+
 ## Open Decisions (Pending)
 
 | ID | Decision | Status | Needed By |
