@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hivecode
+      POSTGRES_PASSWORD: hivecode
+      POSTGRES_DB: hivecode
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hivecode"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./services/hivecode
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      HIVECODE_DATABASE_URL: postgresql+psycopg://hivecode:hivecode@postgres:5432/hivecode
+      HIVECODE_REDIS_URL: redis://redis:6379/0
+      HIVECODE_ENVIRONMENT: local
+      HIVECODE_ARTIFACT_STORAGE_ENDPOINT: http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./services/hivecode:/app
+    command: uvicorn hivecode.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    build:
+      context: ./services/hivecode
+      dockerfile: Dockerfile
+    environment:
+      HIVECODE_DATABASE_URL: postgresql+psycopg://hivecode:hivecode@postgres:5432/hivecode
+      HIVECODE_REDIS_URL: redis://redis:6379/0
+      HIVECODE_ENVIRONMENT: local
+      HIVECODE_ARTIFACT_STORAGE_ENDPOINT: http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/hivecode:/app
+    command: celery -A hivecode.worker.app worker --loglevel=info
+
+  beat:
+    build:
+      context: ./services/hivecode
+      dockerfile: Dockerfile
+    environment:
+      HIVECODE_DATABASE_URL: postgresql+psycopg://hivecode:hivecode@postgres:5432/hivecode
+      HIVECODE_REDIS_URL: redis://redis:6379/0
+      HIVECODE_ENVIRONMENT: local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/hivecode:/app
+    command: celery -A hivecode.worker.app beat --loglevel=info
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

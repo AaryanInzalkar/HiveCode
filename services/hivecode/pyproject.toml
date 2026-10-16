@@ -1,0 +1,71 @@
+[project]
+name = "hivecode"
+version = "0.1.0"
+description = "A verification-first, self-correcting AI software engineering pipeline"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "sqlalchemy>=2.0.30",
+    "alembic>=1.13.0",
+    "psycopg[binary]>=3.1.0",
+    "httpx>=0.27.0",
+    "redis>=5.0.0",
+    "celery>=5.4.0",
+    "python-multipart>=0.0.9",
+    "itsdangerous>=2.2.0",
+    "structlog>=24.1.0",
+    "uuid6>=2024.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "hypothesis>=6.100.0",
+    "ruff>=0.5.0",
+    "mypy>=1.10.0",
+    "import-linter>=2.0.0",
+    "types-redis>=4.6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "C4"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.importlinter]
+root_package = "hivecode"
+
+[[tool.importlinter.contracts]]
+name = "Policy is pure"
+type = "forbidden"
+source_modules = ["hivecode.policy"]
+forbidden_modules = ["hivecode.db", "hivecode.github", "hivecode.sandbox", "hivecode.llm"]
+
+[[tool.importlinter.contracts]]
+name = "Agents cannot import infrastructure"
+type = "forbidden"
+source_modules = ["hivecode.agents"]
+forbidden_modules = ["hivecode.github", "hivecode.sandbox", "hivecode.db"]
