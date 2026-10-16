@@ -228,6 +228,30 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
+### Decision 26: Patch application via structured edits
+
+**Decision:** The coder emits structured edits (file, search_text, replacement). The backend applies them and generates the diff.
+
+**Reasoning:** Edits that fail to apply are detected immediately. Scope checks are exact. The diff is deterministic and reproducible (TD-11, WF-12, WF-13).
+
+---
+
+### Decision 27: Test-file integrity enforcement
+
+**Decision:** Before validation, existing test files, conftest.py, and test configuration are restored to their base-commit content unless the user approved changing them.
+
+**Reasoning:** Prevents a patch that passes by weakening or deleting tests (WF-14). New tests authored by the agent are allowed, counted separately, and flagged in the report.
+
+---
+
+### Decision 28: Delivery policy — no PR for Failed or Blocked
+
+**Decision:** Pull requests are only created for Verified outcomes, or for Partially verified with explicit user approval (draft PR).
+
+**Reasoning:** Failed and Blocked outcomes indicate the fix did not work. Creating a PR for these would be misleading. Partially verified may warrant a draft PR for human review, but only with approval (D-06).
+
+---
+
 ## Open Decisions (Pending)
 
 | ID | Decision | Status | Needed By |
