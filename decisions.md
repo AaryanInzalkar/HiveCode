@@ -190,6 +190,44 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
+### Decision 22: Gemini model assignment per role
+
+**Decision:** Assign specific Gemini models to each agent role.
+
+**Reasoning:** Different roles have different complexity needs. The analyst and reviewer need speed and broad context. The coder needs stronger reasoning for code generation.
+
+**Models:**
+- Analyst: gemini-2.0-flash (fast, good at analysis)
+- Coder: gemini-2.5-flash (stronger coding capability)
+- Reviewer: gemini-2.0-flash (fast, good at review)
+- Failure analyst: gemini-2.0-flash (fast, good at classification)
+
+---
+
+### Decision 23: Replay client for testing
+
+**Decision:** Implement a ReplayClient that returns recorded responses for CI and testing.
+
+**Reasoning:** CI cannot make live LLM calls (cost, latency, non-determinism). The ReplayClient enables deterministic workflow tests and a mini-benchmark without live model calls (LLM-03).
+
+---
+
+### Decision 24: Local sandbox provider for development
+
+**Decision:** Implement a LocalSandboxProvider for development and testing, with DockerSandboxProvider for production.
+
+**Reasoning:** Local development needs fast iteration without Docker overhead. The LocalSandboxProvider uses subprocess isolation (not secure, but fast). Production uses DockerSandboxProvider with full isolation.
+
+---
+
+### Decision 25: Workflow graph as code, not LangGraph yet
+
+**Decision:** Define the workflow graph as a Python data structure (nodes + edges) with a router, but don't use LangGraph yet.
+
+**Reasoning:** LangGraph adds complexity and a learning curve. The workflow is simple enough to implement as a plain Python state machine with the same node functions. LangGraph can be added later if checkpointing and interrupts become necessary (D-02).
+
+---
+
 ## Open Decisions (Pending)
 
 | ID | Decision | Status | Needed By |
