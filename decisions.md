@@ -160,11 +160,40 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
+### Decision 19: Google Gemini as LLM provider
+
+**Decision:** Use Google Gemini API for all agent roles (analyst, coder, reviewer, failure_analyst).
+
+**Reasoning:** The user needs a free tier. Google Gemini offers 1500 requests/day and 1M tokens/min on the free tier, with strong coding quality via gemini-2.0-flash and gemini-2.5-flash. The API is straightforward and well-documented.
+
+**Models:**
+- Analyst: gemini-2.0-flash (fast, good at analysis)
+- Coder: gemini-2.5-flash (stronger coding capability)
+- Reviewer: gemini-2.0-flash (fast, good at review)
+- Failure analyst: gemini-2.0-flash (fast, good at classification)
+
+---
+
+### Decision 20: Backend-first development
+
+**Decision:** Build the backend workflow first (Phases 0-4), then build the frontend (Phase 5).
+
+**Reasoning:** The core value of HiveCode is the verification loop. Building the backend first proves the concept works before investing in UI. The frontend can be built against a stable API.
+
+---
+
+### Decision 21: Full GitHub App integration
+
+**Decision:** Implement the full GitHub App with OAuth, installation tokens, and webhook verification.
+
+**Reasoning:** The user explicitly chose this. GitHub App provides fine-grained permissions, installation-scoped tokens, and is production-ready. More complex to set up but the right long-term choice.
+
+---
+
 ## Open Decisions (Pending)
 
 | ID | Decision | Status | Needed By |
 |---|---|---|---|
-| D-01 | LLM provider/model per role | OPEN | M0 end |
 | D-03 | Supported Python versions | OPEN | M2 |
 | D-05 | Mandatory checks for Verified | OPEN | M2 |
 | D-11 | Frontend hosting (Vercel vs ECS) | OPEN | M1 |
