@@ -284,6 +284,38 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
+### Decision 33: TanStack Query for server state
+
+**Decision:** Use TanStack Query v5 for all server state management in the frontend. No global client store.
+
+**Reasoning:** TanStack Query handles caching, polling, and mutation state for the read-heavy dashboard. The `refetchInterval` option provides built-in polling with automatic cleanup on terminal states.
+
+---
+
+### Decision 34: Dark theme as default
+
+**Decision:** Dark theme is the default theme. Light theme via CSS custom properties.
+
+**Reasoning:** Developer tools benefit from dark themes during long debugging sessions. Dark reduces eye strain. CSS custom properties make theme switching trivial.
+
+---
+
+### Decision 35: Polling over SSE/WebSocket
+
+**Decision:** Use polling (3s interval) for live task updates. WebSocket/SSE deferred to post-beta.
+
+**Reasoning:** Polling is simpler, proxy- and cache-friendly, and sufficient for tasks that last minutes. The `refetchInterval` option in TanStack Query handles this elegantly (D-10, TD-13).
+
+---
+
+### Decision 36: Next.js with App Router and rewrites
+
+**Decision:** Next.js with App Router. API calls are proxied via Next.js rewrites to the backend.
+
+**Reasoning:** Same-origin requests avoid CORS issues. The `__Host-` cookie prefix requires same-origin. Rewrites are simpler than CORS configuration.
+
+---
+
 ## Open Decisions (Pending)
 
 | ID | Decision | Status | Needed By |
