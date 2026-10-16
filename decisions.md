@@ -316,13 +316,29 @@ All meaningful decisions made during code changes are logged here with reasoning
 
 ---
 
-## Open Decisions (Pending)
+### Decision 37: GitHub Actions for CI/CD
 
-| ID | Decision | Status | Needed By |
-|---|---|---|---|
-| D-03 | Supported Python versions | OPEN | M2 |
-| D-05 | Mandatory checks for Verified | OPEN | M2 |
-| D-11 | Frontend hosting (Vercel vs ECS) | OPEN | M1 |
+**Decision:** Use GitHub Actions for CI/CD with separate jobs for backend lint, backend test, frontend lint, and security scan.
+
+**Reasoning:** GitHub Actions is free for public repos, integrates seamlessly with GitHub, and provides all needed features (matrix builds, caching, security scanning).
+
+---
+
+### Decision 38: In-memory metrics collector
+
+**Decision:** Use an in-memory metrics collector for MVP, with interface to push to Prometheus later.
+
+**Reasoning:** Prometheus adds operational complexity. The in-memory collector provides all needed metrics for debugging and evaluation. The interface can be swapped later.
+
+---
+
+## Resolved Decisions
+
+| ID | Decision | Resolution |
+|---|---|---|
+| D-01 | LLM provider/model per role | Google Gemini (free tier) |
+| D-02 | Keep LangGraph or fallback | Custom state machine (LangGraph deferred) |
+| D-11 | Frontend hosting | Next.js with rewrites (same-origin) |
 
 ---
 
