@@ -22,7 +22,7 @@ class RedactingFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         """Redact sensitive fields from the log message."""
         if isinstance(record.msg, dict):
-            record.msg = self._redact_dict(record.msg)
+            record.msg = self._redact_dict(record.msg)  # type: ignore[assignment]
         return True
 
     def _redact_dict(self, data: dict[str, Any]) -> dict[str, Any]:
@@ -34,7 +34,10 @@ class RedactingFilter(logging.Filter):
             elif isinstance(value, dict):
                 redacted[key] = self._redact_dict(value)
             elif isinstance(value, list):
-                redacted[key] = [self._redact_dict(v) if isinstance(v, dict) else v for v in value]
+                redacted[key] = [
+                    self._redact_dict(v) if isinstance(v, dict) else v  # type: ignore[assignment]
+                    for v in value
+                ]
             else:
                 redacted[key] = value
         return redacted
@@ -68,6 +71,7 @@ class StructuredLogger:
 
     def __init__(self, name: str) -> None:
         self.logger = logging.getLogger(name)
+        self.logger.addFilter(CorrelationIdFilter())
 
     def _log(self, level: str, message: str, **context: Any) -> None:
         """Emit a structured log entry."""

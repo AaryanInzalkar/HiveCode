@@ -184,24 +184,30 @@ def parse_pytest_output(stdout: str, stderr: str, exit_code: int) -> ParsedCheck
                 # Determine what this number represents from context
                 pass
 
-    # Parse individual test results
+    # Parse individual test results from pytest output
+    # pytest uses ".F" format: . = passed, F = failed, E = error, s = skipped
     test_results = []
     for match in re.finditer(
-        r"(PASSED|FAILED|ERROR|SKIPPED)\s+(.+?)(?:\s|$)",
+        r"^\s*(?P<file>\S+\.py)\s+(?P<marks>[.FEs]+)",
         stdout,
+        re.MULTILINE,
     ):
-        status_str = match.group(1)
-        test_id = match.group(2).strip()
-
-        status_map = {
-            "PASSED": "passed",
-            "FAILED": "failed",
-            "ERROR": "error",
-            "SKIPPED": "skipped",
-        }
-
-        status = status_map.get(status_str, "unknown")
-        test_results.append(ParsedTestResult(test_id=test_id, status=status))
+        file_path = match.group("file")
+        marks = match.group("marks")
+        for i, mark in enumerate(marks):
+            if mark == ".":
+                status = "passed"
+            elif mark == "F":
+                status = "failed"
+            elif mark == "E":
+                status = "error"
+            elif mark == "s":
+                status = "skipped"
+            else:
+                continue
+            test_results.append(
+                ParsedTestResult(test_id=f"{file_path}::test_{i}", status=status)
+            )
 
     # Count from test results
     passed = sum(1 for t in test_results if t.status == "passed")

@@ -50,7 +50,8 @@ class TestShouldStopNoProgress:
         assert should_stop_no_progress("def456", "abc123", ["a", "b"], ["a", "b"]) is True
 
     def test_different_patch(self):
-        assert should_stop_no_progress("def456", "abc123", ["a"], ["a"]) is False
+        # Different patch with different failures → progress was made
+        assert should_stop_no_progress("def456", "abc123", ["a"], ["b"]) is False
 
     def test_first_attempt(self):
         assert should_stop_no_progress("abc123", None, ["a"], []) is False

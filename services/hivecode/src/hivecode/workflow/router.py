@@ -75,8 +75,8 @@ def route_after_classify(
     can_start, _ = can_start_repair(
         repair_attempts_used=repair_attempts_used,
         max_attempts=max_attempts,
-        remaining_time_s=classification.get("remaining_time_s", 0),
-        remaining_cost_usd=classification.get("remaining_cost_usd", 0),
+        remaining_time_s=classification.get("remaining_time_s", float("inf")),
+        remaining_cost_usd=classification.get("remaining_cost_usd", float("inf")),
     )
 
     if not can_start:

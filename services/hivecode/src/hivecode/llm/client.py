@@ -193,4 +193,8 @@ class ReplayClient:
         key = f"{role.value}:{len(messages)}"
         if key in self.recordings:
             return self.recordings[key]
+        # Try alternate key format (role:value without message count)
+        for k, v in self.recordings.items():
+            if k.startswith(f"{role.value}:"):
+                return v
         return LLMResult(content="{}", model="replay", prompt_version="replay")

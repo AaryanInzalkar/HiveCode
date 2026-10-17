@@ -15,6 +15,7 @@ class TestRedactingFilter:
             lineno=0,
             msg={"api_key": "secret123", "message": "hello"},
             args=(),
+            exc_info=None,
         )
         filter = RedactingFilter()
         filter.filter(record)
@@ -30,6 +31,7 @@ class TestRedactingFilter:
             lineno=0,
             msg={"data": {"password": "secret", "user": "john"}},
             args=(),
+            exc_info=None,
         )
         filter = RedactingFilter()
         filter.filter(record)
@@ -40,7 +42,10 @@ class TestRedactingFilter:
 
 class TestStructuredLogger:
     def test_log_output_is_json(self, caplog):
+        caplog.set_level(logging.INFO)
         logger = StructuredLogger("test")
+        logger.logger.propagate = True
+        logger.logger.setLevel(logging.INFO)
         logger.info("test message", task_id="123")
 
         # The log record should have correlation_id and task_id
