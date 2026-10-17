@@ -1,9 +1,8 @@
 """Tests for failure classification."""
 
-import pytest
 
-from hivecode.workflow.classification import ClassificationResult, FailureClassifier
 from hivecode.policy.retry import FailureClass, FailureRecord
+from hivecode.workflow.classification import FailureClassifier
 
 
 class TestFailureClassifier:

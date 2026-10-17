@@ -4,11 +4,11 @@ Only failures classified as patch_related consume a repair attempt (RET-02).
 Environmental failures get a bounded re-run, not a repair (RET-03).
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
+from hivecode.agents.schemas import FailureClassification as FailureClassificationSchema
 from hivecode.llm.client import LLMClient, Role
 from hivecode.llm.prompts import FAILURE_ANALYST_PROMPT
-from hivecode.agents.schemas import FailureClassification as FailureClassificationSchema
 from hivecode.policy.retry import FailureClass, FailureRecord, classify_failure
 
 

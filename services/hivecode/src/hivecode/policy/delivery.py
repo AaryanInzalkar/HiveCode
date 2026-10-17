@@ -4,16 +4,16 @@ Pure functions only. No I/O.
 """
 
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 
-class DeliveryMode(str, Enum):
+class DeliveryMode(StrEnum):
     PR = "pr"
     REPORT = "report"
     DRAFT_PR = "draft_pr"
 
 
-class DeliveryDecision(str, Enum):
+class DeliveryDecision(StrEnum):
     CREATE_PR = "create_pr"
     CREATE_DRAFT = "create_draft"
     REPORT_ONLY = "report_only"

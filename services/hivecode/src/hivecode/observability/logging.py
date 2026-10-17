@@ -3,8 +3,7 @@
 import json
 import logging
 import sys
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 
@@ -73,7 +72,7 @@ class StructuredLogger:
     def _log(self, level: str, message: str, **context: Any) -> None:
         """Emit a structured log entry."""
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "level": level,
             "logger": self.logger.name,
             "message": message,

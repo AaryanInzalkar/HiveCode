@@ -2,7 +2,6 @@
 
 from hivecode.policy.scope import (
     ScopeConfig,
-    ScopeViolation,
     contains_secrets,
     is_path_allowed,
     validate_limits,

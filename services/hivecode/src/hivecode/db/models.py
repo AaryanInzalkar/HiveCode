@@ -18,13 +18,14 @@ from sqlalchemy import (
     UniqueConstraint,
     func,
 )
-from sqlalchemy.dialects.postgresql import CHAR, INET, UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import CHAR, INET
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from hivecode.db.base import Base
 
 
-class TaskState(str, enum.Enum):
+class TaskState(enum.StrEnum):
     QUEUED = "queued"
     RUNNING = "running"
     AWAITING_APPROVAL = "awaiting_approval"
@@ -33,14 +34,14 @@ class TaskState(str, enum.Enum):
     CANCELLED = "cancelled"
 
 
-class TaskOutcome(str, enum.Enum):
+class TaskOutcome(enum.StrEnum):
     VERIFIED = "verified"
     FAILED = "failed"
     BLOCKED = "blocked"
     PARTIALLY_VERIFIED = "partially_verified"
 
 
-class TaskStage(str, enum.Enum):
+class TaskStage(enum.StrEnum):
     INSPECT = "inspect"
     BASELINE = "baseline"
     DIAGNOSE = "diagnose"
@@ -54,7 +55,7 @@ class TaskStage(str, enum.Enum):
     DELIVER = "deliver"
 
 
-class CheckStatus(str, enum.Enum):
+class CheckStatus(enum.StrEnum):
     PASSED = "passed"
     FAILED = "failed"
     ERROR = "error"
@@ -64,33 +65,33 @@ class CheckStatus(str, enum.Enum):
     CANCELLED = "cancelled"
 
 
-class AttemptKind(str, enum.Enum):
+class AttemptKind(enum.StrEnum):
     INITIAL = "initial"
     REPAIR = "repair"
 
 
-class AttemptStatus(str, enum.Enum):
+class AttemptStatus(enum.StrEnum):
     RUNNING = "running"
     VALIDATED = "validated"
     FAILED = "failed"
     ABANDONED = "abandoned"
 
 
-class ApprovalStatus(str, enum.Enum):
+class ApprovalStatus(enum.StrEnum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
     EXPIRED = "expired"
 
 
-class ApprovalActionType(str, enum.Enum):
+class ApprovalActionType(enum.StrEnum):
     SCOPE_EXPANSION = "scope_expansion"
     PR_NONVERIFIED = "pr_nonverified"
     TEST_MODIFICATION = "test_modification"
     PROTECTED_PATH = "protected_path"
 
 
-class ReviewSeverity(str, enum.Enum):
+class ReviewSeverity(enum.StrEnum):
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -98,7 +99,7 @@ class ReviewSeverity(str, enum.Enum):
     INFO = "info"
 
 
-class ArtifactKind(str, enum.Enum):
+class ArtifactKind(enum.StrEnum):
     DIFF = "diff"
     PLAN = "plan"
     DIAGNOSIS = "diagnosis"

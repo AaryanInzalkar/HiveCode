@@ -4,11 +4,11 @@ These are the hard limits that cannot be overridden by the LLM or prompts.
 """
 
 import time
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
+from enum import StrEnum
 
 
-class StopReason(str, Enum):
+class StopReason(StrEnum):
     """Reasons a task can stop."""
 
     # Blocking

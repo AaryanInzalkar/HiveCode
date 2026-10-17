@@ -10,7 +10,12 @@ class TestGeminiClient:
         assert client.model == "gemini-2.0-flash"
 
     def test_role_prompts_defined(self):
-        from hivecode.llm.prompts import ANALYST_PROMPT, CODER_PROMPT, REVIEWER_PROMPT, FAILURE_ANALYST_PROMPT
+        from hivecode.llm.prompts import (
+            ANALYST_PROMPT,
+            CODER_PROMPT,
+            FAILURE_ANALYST_PROMPT,
+            REVIEWER_PROMPT,
+        )
 
         assert "analyst" in ANALYST_PROMPT.lower()
         assert "engineer" in CODER_PROMPT.lower()

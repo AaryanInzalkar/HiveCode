@@ -8,7 +8,6 @@ routing decisions are made.
 from hivecode.policy.retry import (
     FailureClass,
     can_start_repair,
-    classify_failure,
     should_stop_no_progress,
 )
 from hivecode.workflow.state import WorkflowState

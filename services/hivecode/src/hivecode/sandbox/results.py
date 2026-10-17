@@ -4,9 +4,8 @@ Test output produced inside the sandbox is produced by code that may be
 adversarial, so verification does not depend on trusting it blindly.
 """
 
-import xml.etree.ElementTree as ET
-import json
 import re
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 
 

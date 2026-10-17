@@ -1,10 +1,9 @@
 """Tests for observability components."""
 
-import json
 import logging
 
 from hivecode.observability.logging import RedactingFilter, StructuredLogger
-from hivecode.observability.metrics import MetricsCollector, MetricType
+from hivecode.observability.metrics import MetricsCollector
 
 
 class TestRedactingFilter:

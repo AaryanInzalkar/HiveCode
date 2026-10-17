@@ -21,7 +21,7 @@ class WorkflowRunner:
 
         Returns a summary of the execution including the final outcome.
         """
-        state = WorkflowState(task_id=task_id)
+        WorkflowState(task_id=task_id)
 
         try:
             # TODO: Execute the LangGraph workflow

@@ -1,9 +1,7 @@
 """Authentication router — GitHub OAuth, sessions, CSRF."""
 
 import hashlib
-import os
-import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -14,9 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hivecode.config import get_settings
 from hivecode.db.base import get_db
 from hivecode.db.models import Session as SessionModel
-from hivecode.db.models import User
 from hivecode.db.repositories import UserRepository
-from hivecode.db.uuid7 import uuid7
 
 router = APIRouter()
 
@@ -66,7 +62,7 @@ async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
     if not session:
         return AuthStatusResponse(authenticated=False)
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if session.idle_expires_at < now or session.absolute_expires_at < now:
         return AuthStatusResponse(authenticated=False)
 
@@ -106,7 +102,7 @@ async def get_me(request: Request, db: AsyncSession = Depends(get_db)):
     if not session:
         raise HTTPException(status_code=401, detail="Session not found")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if session.idle_expires_at < now or session.absolute_expires_at < now:
         raise HTTPException(status_code=401, detail="Session expired")
 
@@ -138,7 +134,7 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
         )
         session = result.scalar_one_or_none()
         if session:
-            session.revoked_at = datetime.now(timezone.utc)
+            session.revoked_at = datetime.now(UTC)
             await db.commit()
 
     response.delete_cookie(

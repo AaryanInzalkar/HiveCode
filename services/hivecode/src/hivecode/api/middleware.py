@@ -7,8 +7,6 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from hivecode.config import get_settings
-
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Add security headers to all responses."""
@@ -61,7 +59,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         try:
             return await call_next(request)
-        except Exception as exc:
+        except Exception:
             correlation_id = getattr(request.state, "correlation_id", "unknown")
             return JSONResponse(
                 status_code=500,

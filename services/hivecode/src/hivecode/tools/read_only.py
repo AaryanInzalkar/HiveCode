@@ -5,7 +5,6 @@ No tool can modify files or execute arbitrary commands.
 """
 
 import ast
-import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path

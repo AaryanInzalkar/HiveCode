@@ -7,18 +7,14 @@ the container, exhausting resources, producing misleading output, and
 exfiltrating the repository itself.
 """
 
-import asyncio
-import json
-import subprocess
-import tempfile
 import zipfile
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Protocol
 
 
-class JobStatus(str, Enum):
+class JobStatus(StrEnum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -256,7 +252,7 @@ def validate_command_args(command_id: str, args: dict) -> list[str]:
         errors.append(f"Unknown command_id: {command_id}")
         return errors
 
-    spec = COMMAND_CATALOG[command_id]
+    COMMAND_CATALOG[command_id]
 
     # Validate test selectors (must match strict pattern)
     if command_id in ("pytest_selected", "pytest_full"):

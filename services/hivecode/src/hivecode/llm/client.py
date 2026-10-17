@@ -4,16 +4,17 @@ All model calls go through LLMClient. Each call records provider, model,
 prompt version, tokens, cost, and latency.
 """
 
+import contextlib
 import time
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
+from enum import StrEnum
 from typing import Any, Protocol
 
 import httpx
 from pydantic import BaseModel
 
 
-class Role(str, Enum):
+class Role(StrEnum):
     ANALYST = "analyst"
     CODER = "coder"
     REVIEWER = "reviewer"
@@ -131,11 +132,8 @@ class GeminiClient:
         # Parse structured output if requested
         parsed = None
         if response_model and content:
-            try:
-                import json
+            with contextlib.suppress(Exception):
                 parsed = response_model.model_validate_json(content)
-            except Exception:
-                pass
 
         # Extract token usage
         usage = data.get("usageMetadata", {})

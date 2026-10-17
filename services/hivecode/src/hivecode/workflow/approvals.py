@@ -7,19 +7,19 @@ Approvals expire after 24 hours (P).
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from enum import Enum
+from datetime import UTC, datetime, timedelta
+from enum import StrEnum
 from uuid import UUID
 
 
-class ApprovalActionType(str, Enum):
+class ApprovalActionType(StrEnum):
     SCOPE_EXPANSION = "scope_expansion"
     PR_NONVERIFIED = "pr_nonverified"
     TEST_MODIFICATION = "test_modification"
     PROTECTED_PATH = "protected_path"
 
 
-class ApprovalStatus(str, Enum):
+class ApprovalStatus(StrEnum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -64,7 +64,7 @@ def create_approval_request(
     Returns:
         ApprovalRequest
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expires = now + timedelta(hours=24)  # 24h expiry (P)
 
     return ApprovalRequest(
@@ -85,7 +85,7 @@ def check_expiry(approval: ApprovalRequest, now: datetime | None = None) -> Appr
     Returns the current status (PENDING or EXPIRED).
     """
     if now is None:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
     if now >= approval.expires_at:
         return ApprovalStatus.EXPIRED

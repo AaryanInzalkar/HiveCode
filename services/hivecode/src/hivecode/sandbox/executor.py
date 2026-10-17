@@ -8,22 +8,14 @@ Each check runs in a disposable container with:
 """
 
 import asyncio
-import json
-import subprocess
-import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from hivecode.sandbox.provider import (
-    JobSpec,
-    JobStatus,
-    JobResult,
-    PhaseResult,
-    ResourceLimits,
     validate_command_args,
 )
-from hivecode.sandbox.results import parse_junit_xml, parse_pytest_output, validate_check_result
+from hivecode.sandbox.results import parse_pytest_output
 
 
 @dataclass
@@ -105,7 +97,7 @@ class SandboxExecutor:
                 "flaky_suspected": False,
             }
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return {
                 "check_key": check.check_key,
                 "status": "timed_out",
@@ -170,7 +162,7 @@ class SandboxExecutor:
                     "stdout": stdout.decode("utf-8", errors="replace"),
                     "stderr": stderr.decode("utf-8", errors="replace"),
                 }
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 proc.kill()
                 await proc.communicate()
                 return {
@@ -211,10 +203,7 @@ class SandboxExecutor:
             }
 
         # Generic command
-        if exit_code == 0:
-            status = "passed"
-        else:
-            status = "failed"
+        status = "passed" if exit_code == 0 else "failed"
 
         return {
             "status": status,

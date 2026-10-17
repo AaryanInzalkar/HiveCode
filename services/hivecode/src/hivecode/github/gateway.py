@@ -3,7 +3,6 @@
 Uses GitHub App authentication with installation tokens.
 """
 
-import base64
 import hashlib
 import hmac
 import time
@@ -12,8 +11,6 @@ from typing import Protocol
 
 import httpx
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import hashes
 
 
 @dataclass

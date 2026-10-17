@@ -3,11 +3,11 @@
 Pure functions only. No I/O.
 """
 
-from dataclasses import dataclass, field
-from enum import Enum
+from dataclasses import dataclass
+from enum import StrEnum
 
 
-class FailureClass(str, Enum):
+class FailureClass(StrEnum):
     PRE_EXISTING = "pre_existing"
     ENVIRONMENTAL = "environmental"
     PATCH_RELATED = "patch_related"
@@ -120,10 +120,7 @@ def should_stop_no_progress(
     if previous_patch_sha256 and current_patch_sha256 == previous_patch_sha256:
         return True
 
-    if previous_failures and set(current_failures) == set(previous_failures):
-        return True
-
-    return False
+    return bool(previous_failures and set(current_failures) == set(previous_failures))
 
 
 def can_start_repair(

@@ -7,7 +7,6 @@ from hivecode.policy.verdict import (
     CheckStatus,
     Evidence,
     Outcome,
-    Verdict,
     compute_verdict,
 )
 

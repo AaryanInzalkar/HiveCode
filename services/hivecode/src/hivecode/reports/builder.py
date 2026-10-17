@@ -5,9 +5,8 @@ from the same stored evidence by deterministic templates (WF-10).
 Model-written summaries appear only in a separately labeled narrative section.
 """
 
-import json
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 
@@ -32,19 +31,19 @@ class VerificationReport:
     def to_markdown(self) -> str:
         """Render the report as Markdown."""
         lines = [
-            f"# Verification Report",
-            f"",
+            "# Verification Report",
+            "",
             f"**Outcome:** {self.outcome}",
             f"**Policy version:** {self.policy_version}",
             f"**Generated:** {self.generated_at.isoformat()}",
-            f"",
+            "",
         ]
 
         for section in self.sections:
             lines.append(f"## {section.title}")
-            lines.append(f"")
+            lines.append("")
             lines.append(section.content)
-            lines.append(f"")
+            lines.append("")
 
         return "\n".join(lines)
 
@@ -86,7 +85,7 @@ class ReportBuilder:
         All content is generated deterministically from the provided evidence.
         No LLM-generated content is included.
         """
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         sections = []
 
         # Summary section
@@ -138,17 +137,17 @@ class ReportBuilder:
         Includes the verification report summary and links to evidence.
         """
         lines = [
-            f"## HiveCode Verification Report",
-            f"",
+            "## HiveCode Verification Report",
+            "",
             f"**Outcome:** {report.outcome}",
             f"**Policy version:** {report.policy_version}",
-            f"",
-            f"### Summary",
-            f"",
+            "",
+            "### Summary",
+            "",
             report.sections[0].content if report.sections else "No summary available.",
-            f"",
-            f"### Changed Files",
-            f"",
+            "",
+            "### Changed Files",
+            "",
         ]
 
         # Add changed files from report
@@ -158,9 +157,9 @@ class ReportBuilder:
                 break
 
         lines.extend([
-            f"",
-            f"### Check Results",
-            f"",
+            "",
+            "### Check Results",
+            "",
         ])
 
         for section in report.sections:
@@ -170,16 +169,16 @@ class ReportBuilder:
 
         if diff_url:
             lines.extend([
-                f"",
-                f"### Evidence",
-                f"",
+                "",
+                "### Evidence",
+                "",
                 f"- [Full diff]({diff_url})",
             ])
 
         lines.extend([
-            f"",
-            f"---",
-            f"*This PR was created by HiveCode. Verification does not guarantee correctness.*",
+            "",
+            "---",
+            "*This PR was created by HiveCode. Verification does not guarantee correctness.*",
         ])
 
         return "\n".join(lines)

@@ -1,11 +1,10 @@
 """Tests for approvals workflow."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 from hivecode.workflow.approvals import (
     ApprovalActionType,
-    ApprovalRequest,
     ApprovalStatus,
     check_expiry,
     compute_payload_hash,
@@ -48,7 +47,7 @@ class TestCreateApprovalRequest:
         assert approval.action_type == ApprovalActionType.SCOPE_EXPANSION
         assert approval.status == ApprovalStatus.PENDING
         assert approval.payload_hash == compute_payload_hash(payload)
-        assert approval.expires_at > datetime.now(timezone.utc)
+        assert approval.expires_at > datetime.now(UTC)
 
 
 class TestCheckExpiry:
@@ -67,7 +66,7 @@ class TestCheckExpiry:
             payload={},
         )
         # Check 25 hours in the future
-        future = datetime.now(timezone.utc) + timedelta(hours=25)
+        future = datetime.now(UTC) + timedelta(hours=25)
         assert check_expiry(approval, now=future) == ApprovalStatus.EXPIRED
 
 

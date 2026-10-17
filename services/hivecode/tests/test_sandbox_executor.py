@@ -1,7 +1,6 @@
 """Tests for the sandbox executor."""
 
 import tempfile
-from pathlib import Path
 
 from hivecode.sandbox.executor import CheckConfig, SandboxExecutor
 

@@ -4,13 +4,12 @@ Tracks: tasks by outcome, repair attempts, stage durations,
 queue wait time, sandbox concurrency, LLM tokens and cost.
 """
 
-import time
 from collections import defaultdict
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 
 
-class MetricType(str, Enum):
+class MetricType(StrEnum):
     COUNTER = "counter"
     GAUGE = "gauge"
     HISTOGRAM = "histogram"

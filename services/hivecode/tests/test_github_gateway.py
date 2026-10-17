@@ -1,6 +1,5 @@
 """Tests for the GitHub gateway."""
 
-import pytest
 
 from hivecode.github.gateway import RepoRef, verify_webhook_signature
 

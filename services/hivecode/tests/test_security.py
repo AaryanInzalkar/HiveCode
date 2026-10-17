@@ -1,11 +1,14 @@
 """Security tests — IDOR, CSRF, prompt injection, scope enforcement."""
 
-import pytest
 from uuid import uuid4
 
-from hivecode.policy.scope import ScopeConfig, is_path_allowed, contains_secrets
-from hivecode.workflow.approvals import compute_payload_hash, validate_approval, create_approval_request
-from hivecode.workflow.safety import BudgetEnforcer, KillSwitch, Budget
+from hivecode.policy.scope import ScopeConfig, contains_secrets, is_path_allowed
+from hivecode.workflow.approvals import (
+    compute_payload_hash,
+    create_approval_request,
+    validate_approval,
+)
+from hivecode.workflow.safety import Budget, BudgetEnforcer
 
 
 class TestIDORPrevention:
@@ -13,11 +16,11 @@ class TestIDORPrevention:
 
     def test_task_repository_scopes_by_user(self):
         """Verify that TaskRepository.get_by_id filters by user_id."""
-        from hivecode.db.repositories import TaskRepository
-
         # The repository function signature includes user_id
         # This ensures cross-user access is impossible
         import inspect
+
+        from hivecode.db.repositories import TaskRepository
         sig = inspect.signature(TaskRepository.get_by_id)
         assert "user_id" in sig.parameters
 

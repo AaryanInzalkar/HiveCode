@@ -1,8 +1,7 @@
 """API dependencies — authentication, CSRF, rate limiting."""
 
 import hashlib
-from datetime import datetime, timezone
-from uuid import UUID
+from datetime import UTC, datetime
 
 from fastapi import HTTPException, Request
 from sqlalchemy import select
@@ -42,7 +41,7 @@ async def get_current_user(request: Request, db: AsyncSession) -> User:
     if not session:
         raise HTTPException(status_code=401, detail="Session not found")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if session.idle_expires_at < now or session.absolute_expires_at < now:
         raise HTTPException(status_code=401, detail="Session expired")
 

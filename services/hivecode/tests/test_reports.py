@@ -1,9 +1,8 @@
 """Tests for the report builder."""
 
-from datetime import datetime, timezone
 from uuid import uuid4
 
-from hivecode.reports.builder import ReportBuilder, ReportSection, VerificationReport
+from hivecode.reports.builder import ReportBuilder
 
 
 class TestReportBuilder:

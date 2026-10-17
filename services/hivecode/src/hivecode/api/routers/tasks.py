@@ -7,8 +7,6 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hivecode.db.base import get_db
-from hivecode.db.models import Task
-from hivecode.db.repositories import TaskRepository
 
 router = APIRouter()
 

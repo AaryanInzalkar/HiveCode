@@ -52,11 +52,7 @@ def is_path_allowed(path: str, config: ScopeConfig) -> bool:
             return False
 
     # Check allowed paths
-    for pattern in config.allowed_paths:
-        if fnmatch.fnmatch(path, pattern):
-            return True
-
-    return False
+    return any(fnmatch.fnmatch(path, pattern) for pattern in config.allowed_paths)
 
 
 def validate_paths(paths: list[str], config: ScopeConfig) -> list[ScopeViolation]:

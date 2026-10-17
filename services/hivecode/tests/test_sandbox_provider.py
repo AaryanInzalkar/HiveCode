@@ -2,9 +2,7 @@
 
 from hivecode.sandbox.provider import (
     COMMAND_CATALOG,
-    JobSpec,
     LocalSandboxProvider,
-    PhaseSpec,
     ResourceLimits,
     validate_command_args,
 )

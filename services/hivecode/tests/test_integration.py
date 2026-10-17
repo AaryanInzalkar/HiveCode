@@ -4,12 +4,11 @@ These tests use mock adapters to verify the workflow executes correctly
 without live LLM calls or real GitHub integration.
 """
 
-import pytest
 from uuid import uuid4
 
-from hivecode.llm.client import ReplayClient, LLMResult, Role
+from hivecode.llm.client import LLMResult, ReplayClient, Role
+from hivecode.workflow.router import route_after_classify, route_after_evaluate
 from hivecode.workflow.state import WorkflowState
-from hivecode.workflow.router import route_after_evaluate, route_after_classify
 
 
 class TestWorkflowIntegration:

@@ -1,12 +1,7 @@
 """Sweeper — scheduled recovery and cleanup tasks."""
 
-from datetime import datetime, timezone
 
 from celery import shared_task
-from sqlalchemy import select
-
-from hivecode.db.base import async_session_factory
-from hivecode.db.models import Approval, Artifact, Task
 
 
 @shared_task

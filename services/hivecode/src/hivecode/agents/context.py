@@ -192,7 +192,7 @@ class ContextAssembler:
             context.logs.append(f"--- Failure Output ---\n{failure_output}")
         estimated += len(failure_output) // 4
 
-        context.logs.append(f"--- Baseline Failures ---\n" + "\n".join(baseline_failures))
+        context.logs.append("--- Baseline Failures ---\n" + "\n".join(baseline_failures))
         estimated += len("\n".join(baseline_failures)) // 4
 
         context.files.append(f"--- Patch ---\n{patch}")

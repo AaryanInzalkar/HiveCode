@@ -6,7 +6,6 @@ from pathlib import Path
 from hivecode.policy.patch import (
     Edit,
     apply_edits,
-    restore_test_files,
     validate_test_integrity,
 )
 

@@ -7,17 +7,17 @@ Model-written summaries are never an input to the outcome.
 """
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 
 
-class Outcome(str, Enum):
+class Outcome(StrEnum):
     VERIFIED = "verified"
     FAILED = "failed"
     BLOCKED = "blocked"
     PARTIALLY_VERIFIED = "partially_verified"
 
 
-class CheckStatus(str, Enum):
+class CheckStatus(StrEnum):
     PASSED = "passed"
     FAILED = "failed"
     ERROR = "error"
