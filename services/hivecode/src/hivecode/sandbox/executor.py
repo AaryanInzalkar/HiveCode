@@ -11,6 +11,7 @@ import asyncio
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, cast
 
 from hivecode.sandbox.provider import (
     validate_command_args,
@@ -136,7 +137,8 @@ class SandboxExecutor:
         if not spec:
             return {"exit_code": 1, "stdout": "", "stderr": f"Unknown command: {command_id}"}
 
-        argv = list(spec["argv"])
+        spec = cast(dict[str, Any], spec)
+        argv = list(cast(list[str], spec["argv"]))
 
         # Add test selectors for pytest
         if command_id in ("pytest_selected", "pytest_full"):
