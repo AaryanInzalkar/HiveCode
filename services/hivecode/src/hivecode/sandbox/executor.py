@@ -91,7 +91,7 @@ class SandboxExecutor:
                 "is_mandatory": check.is_mandatory,
                 "exit_code": result.get("exit_code"),
                 "duration_ms": duration_ms,
-                "counts": parsed.get("counts", {}),
+                "counts": parsed.get("counts") or {},
                 "tree_sha": parsed.get("tree_sha", ""),
                 "command_id": check.command_id,
                 "flaky_suspected": False,
