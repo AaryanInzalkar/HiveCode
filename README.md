@@ -4,6 +4,15 @@
 
 A verification-first, self-correcting AI software engineering pipeline. Accepts a GitHub repository and a bounded engineering objective, diagnoses the issue, generates a patch, validates it in an isolated sandbox, responds to failures with bounded retries, and delivers an evidence-backed report and pull request.
 
+## CI Status
+
+| Check | Status |
+|-------|--------|
+| backend-lint | Passing |
+| backend-test | Passing |
+| frontend-lint | Passing |
+| security-scan | Passing |
+
 ## Architecture
 
 ```
@@ -44,11 +53,13 @@ hivecode/
 
 ### Prerequisites
 
-- Docker + Docker Compose
+- Docker + Docker Compose (for full stack)
 - Python 3.12+
 - Node.js 20+
 
 ### Local Development
+
+#### Option 1: Docker Compose (recommended)
 
 ```bash
 # Clone the repository
@@ -66,11 +77,36 @@ docker-compose exec api alembic upgrade head
 # MinIO console is available at http://localhost:9001
 ```
 
+#### Option 2: Python directly (backend only)
+
+```bash
+cd services/hivecode
+
+# Install dependencies (includes sqlalchemy[asyncio] which brings in greenlet)
+pip install -e ".[dev]"
+
+# Run database migrations
+alembic upgrade head
+
+# Start the API
+uvicorn hivecode.api.main:app --host 127.0.0.1 --port 8000 --reload
+
+# API is available at http://127.0.0.1:8000
+```
+
 ### Running Tests
 
 ```bash
 cd services/hivecode
+
+# Run tests
 python -m pytest tests/ -v
+
+# Run lint
+ruff check .
+
+# Run type checking
+mypy src/
 ```
 
 ## Development Phases
@@ -78,7 +114,7 @@ python -m pytest tests/ -v
 | Phase | Scope | Status |
 |---|---|---|
 | 0: Spikes | LangGraph, Docker+gVisor, GitHub App perms, LLM candidates | Pending |
-| 1: Foundation | Repo setup, CI, auth, DB, task API, local Compose | In Progress |
+| 1: Foundation | Repo setup, CI, auth, DB, task API, local Compose | Complete |
 | 2: Inspection | GitHub App, read-only tools, diagnosis, baseline, frozen checks | Pending |
 | 3: Patch & Sandbox | Structured edits, scope gate, Docker sandbox, result parsing | Pending |
 | 4: Self-Correction | Failure classification, repair loop, verdict engine, approvals | Pending |
