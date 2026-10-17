@@ -7,6 +7,7 @@ queue wait time, sandbox concurrency, LLM tokens and cost.
 from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import Any
 
 
 class MetricType(StrEnum):
@@ -31,7 +32,7 @@ class MetricsCollector:
     For now, metrics are stored in memory and can be queried.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._metrics: dict[str, list[MetricValue]] = defaultdict(list)
 
     def increment(self, name: str, value: float = 1, **labels: str) -> None:
@@ -52,7 +53,7 @@ class MetricsCollector:
             MetricValue(type=MetricType.HISTOGRAM, value=value, labels=labels)
         )
 
-    def get_metrics(self) -> dict:
+    def get_metrics(self) -> dict[str, list[dict[str, Any]]]:
         """Get all collected metrics."""
         return {
             name: [
@@ -70,7 +71,11 @@ class MetricsCollector:
 
     def record_repair_attempt(self, task_id: str, attempt_no: int) -> None:
         """Record a repair attempt."""
-        self.increment("repair_attempts_total", task_id=task_id, attempt_no=attempt_no)
+        self.increment(
+            "repair_attempts_total",
+            task_id=task_id,
+            attempt_no=str(attempt_no),
+        )
 
     def record_stage_duration(self, stage: str, duration_ms: float) -> None:
         """Record a stage duration."""

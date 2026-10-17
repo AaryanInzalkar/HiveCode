@@ -17,7 +17,7 @@ class EventResponse(BaseModel):
     type: str
     stage: str | None
     attempt_no: int | None
-    data: dict
+    data: dict[str, str]
     created_at: str
 
 
@@ -28,11 +28,11 @@ class EventsResponse(BaseModel):
 
 @router.get("")
 async def get_events(
-    task_id: UUID = Query(...),
+    task_id: UUID = Query(...),  # noqa: B008
     after_seq: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
-    db: AsyncSession = Depends(get_db),
-):
+    db: AsyncSession = Depends(get_db),  # noqa: B008
+) -> EventsResponse:
     """Get task events after a sequence number (polling)."""
     # TODO: Implement with auth
     events = await TaskEventRepository.get_events_after(db, task_id, after_seq, limit)

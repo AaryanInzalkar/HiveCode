@@ -7,6 +7,7 @@ Model-written summaries appear only in a separately labeled narrative section.
 
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from typing import Any
 from uuid import UUID
 
 
@@ -47,7 +48,7 @@ class VerificationReport:
 
         return "\n".join(lines)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Render the report as a dict."""
         return {
             "task_id": str(self.task_id),
@@ -72,13 +73,13 @@ class ReportBuilder:
         title: str,
         objective: str,
         changed_files: list[str],
-        check_results: list[dict],
+        check_results: list[dict[str, Any]],
         attempts_used: int,
         max_attempts: int,
         cost_usd: float,
         duration_s: float,
         verdict_reasons: list[str],
-        evidence: dict,
+        evidence: dict[str, Any],
     ) -> VerificationReport:
         """Build a verification report.
 
@@ -93,7 +94,11 @@ class ReportBuilder:
         sections.append(ReportSection(title="Summary", content=summary))
 
         # Changed files section
-        files_content = "\n".join(f"- `{f}`" for f in changed_files) if changed_files else "No files changed."
+        files_content = (
+            "\n".join(f"- `{f}`" for f in changed_files)
+            if changed_files
+            else "No files changed."
+        )
         sections.append(ReportSection(title="Changed Files", content=files_content))
 
         # Check results section

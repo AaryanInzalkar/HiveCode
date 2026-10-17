@@ -33,9 +33,9 @@ class AssembledContext:
 class ContextAssembler:
     """Assembles context for LLM calls within a token budget."""
 
-    def __init__(self, tools: ReadOnlyTools, budget: ContextBudget = ContextBudget()):
+    def __init__(self, tools: ReadOnlyTools, budget: ContextBudget | None = None):
         self.tools = tools
-        self.budget = budget
+        self.budget = budget or ContextBudget()
 
     def assemble_for_diagnosis(
         self,

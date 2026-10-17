@@ -69,13 +69,13 @@ class KillSwitch:
     activated_at: float | None = None
     reason: str = ""
 
-    def activate(self, reason: str):
+    def activate(self, reason: str) -> None:
         """Activate the kill switch."""
         self.active = True
         self.activated_at = time.time()
         self.reason = reason
 
-    def deactivate(self):
+    def deactivate(self) -> None:
         """Deactivate the kill switch."""
         self.active = False
         self.activated_at = None
@@ -85,7 +85,7 @@ class KillSwitch:
 class BudgetEnforcer:
     """Enforces task budgets and stop conditions."""
 
-    def __init__(self, budget: Budget):
+    def __init__(self, budget: Budget) -> None:
         self.budget = budget
         self.kill_switch = KillSwitch()
 
@@ -129,7 +129,7 @@ class BudgetEnforcer:
 
         return True, None
 
-    def record_usage(self, time_s: float, cost_usd: float, tokens: int = 0):
+    def record_usage(self, time_s: float, cost_usd: float, tokens: int = 0) -> None:
         """Record resource usage."""
         self.budget.time_used_s += time_s
         self.budget.cost_used_usd += cost_usd

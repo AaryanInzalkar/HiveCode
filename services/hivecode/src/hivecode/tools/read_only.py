@@ -32,7 +32,9 @@ class ReadOnlyTools:
         self.workspace = Path(workspace_path)
         self.scope = scope
 
-    def read_file(self, path: str, start_line: int = 1, end_line: int | None = None) -> ToolResult:
+    def read_file(
+        self, path: str, start_line: int = 1, end_line: int | None = None
+    ) -> ToolResult:
         """Read a file from the workspace.
 
         Args:
@@ -41,7 +43,9 @@ class ReadOnlyTools:
             end_line: Last line to read (None = end of file)
         """
         if not is_path_allowed(path, self.scope):
-            return ToolResult(success=False, content="", error=f"Path '{path}' is outside allowed scope")
+            return ToolResult(
+                success=False, content="", error=f"Path '{path}' is outside allowed scope"
+            )
 
         file_path = self.workspace / path
         if not file_path.exists():
@@ -64,13 +68,18 @@ class ReadOnlyTools:
 
             content = "\n".join(selected)
             if truncated:
-                content += f"\n\n... (truncated, showing {max_lines} of {end - start_line + 1} lines)"
+                content += (
+                    f"\n\n... (truncated, showing {max_lines} "
+                    f"of {end - start_line + 1} lines)"
+                )
 
             return ToolResult(success=True, content=content)
         except Exception as e:
             return ToolResult(success=False, content="", error=str(e))
 
-    def search(self, pattern: str, path: str = ".", file_pattern: str = "*.py") -> ToolResult:
+    def search(
+        self, pattern: str, path: str = ".", file_pattern: str = "*.py"
+    ) -> ToolResult:
         """Search for a pattern in the workspace using ripgrep.
 
         Args:
@@ -79,7 +88,9 @@ class ReadOnlyTools:
             file_pattern: File glob pattern
         """
         if not is_path_allowed(path, self.scope):
-            return ToolResult(success=False, content="", error=f"Path '{path}' is outside allowed scope")
+            return ToolResult(
+                success=False, content="", error=f"Path '{path}' is outside allowed scope"
+            )
 
         search_path = self.workspace / path
         if not search_path.exists():
@@ -120,7 +131,10 @@ class ReadOnlyTools:
 
             output = "\n".join(matches)
             if truncated:
-                output += f"\n\n... (truncated, showing {max_matches} of {len(matches)} matches)"
+                output += (
+                    f"\n\n... (truncated, showing {max_matches} "
+                    f"of {len(matches)} matches)"
+                )
 
             return ToolResult(success=True, content=output)
         except subprocess.TimeoutExpired:
@@ -136,7 +150,9 @@ class ReadOnlyTools:
             path: Subdirectory to search in
         """
         if not is_path_allowed(path, self.scope):
-            return ToolResult(success=False, content="", error=f"Path '{path}' is outside allowed scope")
+            return ToolResult(
+                success=False, content="", error=f"Path '{path}' is outside allowed scope"
+            )
 
         search_path = self.workspace / path
         if not search_path.exists():
@@ -147,12 +163,14 @@ class ReadOnlyTools:
             try:
                 tree = ast.parse(py_file.read_text(encoding="utf-8"))
                 for node in ast.walk(tree):
-                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                        if node.name == symbol_name:
-                            rel_path = py_file.relative_to(self.workspace)
-                            results.append(
-                                f"{rel_path}:{node.lineno}: {type(node).__name__} '{node.name}'"
-                            )
+                    if (
+                        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+                        and node.name == symbol_name
+                    ):
+                        rel_path = py_file.relative_to(self.workspace)
+                        results.append(
+                            f"{rel_path}:{node.lineno}: {type(node).__name__} '{node.name}'"
+                        )
             except (SyntaxError, UnicodeDecodeError):
                 continue
 
@@ -168,7 +186,9 @@ class ReadOnlyTools:
             path: Relative directory path
         """
         if not is_path_allowed(path, self.scope):
-            return ToolResult(success=False, content="", error=f"Path '{path}' is outside allowed scope")
+            return ToolResult(
+                success=False, content="", error=f"Path '{path}' is outside allowed scope"
+            )
 
         dir_path = self.workspace / path
         if not dir_path.exists():
@@ -195,7 +215,10 @@ class ReadOnlyTools:
 
             output = "\n".join(entries)
             if truncated:
-                output += f"\n\n... (truncated, showing {max_entries} of {len(entries)} entries)"
+                output += (
+                    f"\n\n... (truncated, showing {max_entries} "
+                    f"of {len(entries)} entries)"
+                )
 
             return ToolResult(success=True, content=output)
         except Exception as e:
@@ -208,7 +231,9 @@ class ReadOnlyTools:
             path: Relative file path
         """
         if not is_path_allowed(path, self.scope):
-            return ToolResult(success=False, content="", error=f"Path '{path}' is outside allowed scope")
+            return ToolResult(
+                success=False, content="", error=f"Path '{path}' is outside allowed scope"
+            )
 
         file_path = self.workspace / path
         if not file_path.exists():

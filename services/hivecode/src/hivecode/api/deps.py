@@ -46,12 +46,12 @@ async def get_current_user(request: Request, db: AsyncSession) -> User:
         raise HTTPException(status_code=401, detail="Session expired")
 
     result = await db.execute(select(User).where(User.id == session.user_id))
-    user = result.scalar_one_or_none()
+    user: User | None = result.scalar_one_or_none()  # type: ignore[assignment]
 
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
-    if user.disabled_at:
+    if user.disabled_at is not None:
         raise HTTPException(status_code=403, detail="User disabled")
 
     return user
@@ -79,4 +79,3 @@ def verify_csrf(request: Request) -> None:
 
     # TODO: Look up session's CSRF secret and compare
     # For now, accept any non-empty token (implement full check in auth phase)
-    pass

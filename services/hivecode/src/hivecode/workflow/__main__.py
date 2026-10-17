@@ -10,7 +10,7 @@ from uuid import UUID
 from hivecode.workflow.runner import WorkflowRunner
 
 
-async def main():
+async def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: python -m hivecode.workflow <task_id>")
         sys.exit(1)

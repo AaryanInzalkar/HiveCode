@@ -19,7 +19,7 @@ from hivecode.workflow.nodes import (
 )
 
 
-def create_workflow_graph():
+def create_workflow_graph() -> dict:
     """Create the LangGraph StateGraph for task execution.
 
     Graph structure:

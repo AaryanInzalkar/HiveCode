@@ -75,14 +75,14 @@ def parse_junit_xml(xml_content: str, check_key: str) -> ParsedCheckResult:
             status = "failed"
             failed += 1
             failure = testcase.find("failure")
-            message = failure.get("message", "")
-            traceback = failure.text or ""
+            message = failure.get("message", "") if failure is not None else ""
+            traceback = failure.text or "" if failure is not None else ""
         elif testcase.find("error") is not None:
             status = "error"
             errors += 1
             error = testcase.find("error")
-            message = error.get("message", "")
-            traceback = error.text or ""
+            message = error.get("message", "") if error is not None else ""
+            traceback = error.text or "" if error is not None else ""
         elif testcase.find("skipped") is not None:
             status = "skipped"
             skipped += 1

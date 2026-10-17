@@ -3,6 +3,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,8 +17,8 @@ class CreateTaskRequest(BaseModel):
     base_ref: str = "main"
     title: str = Field(..., min_length=3, max_length=200)
     objective: str = Field(..., min_length=20, max_length=5000)
-    acceptance_criteria: list[dict] = Field(default_factory=list)
-    scope: dict = Field(default_factory=dict)
+    acceptance_criteria: list[dict[str, str]] = Field(default_factory=list)
+    scope: dict[str, str] = Field(default_factory=dict)
     delivery_mode: str = "pr"  # "pr" or "report"
 
 
@@ -47,8 +48,8 @@ class TaskListResponse(BaseModel):
 async def create_task(
     request: Request,
     body: CreateTaskRequest,
-    db: AsyncSession = Depends(get_db),
-):
+    db: AsyncSession = Depends(get_db),  # noqa: B008
+) -> JSONResponse:
     """Create a new task. Returns 202 — execution is asynchronous."""
     # TODO: Implement full task creation with auth, GitHub resolution, Celery enqueue
     # For now, return a placeholder
@@ -62,8 +63,8 @@ async def list_tasks(
     outcome: str | None = None,
     cursor: str | None = None,
     limit: int = Query(default=20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db),
-):
+    db: AsyncSession = Depends(get_db),  # noqa: B008
+) -> TaskListResponse:
     """List tasks for the authenticated user."""
     # TODO: Implement with auth
     return TaskListResponse(tasks=[], next_cursor=None)
@@ -73,8 +74,8 @@ async def list_tasks(
 async def get_task(
     task_id: UUID,
     request: Request,
-    db: AsyncSession = Depends(get_db),
-):
+    db: AsyncSession = Depends(get_db),  # noqa: B008
+) -> JSONResponse:
     """Get a specific task by ID."""
     # TODO: Implement with auth
     raise HTTPException(status_code=404, detail="Task not found")

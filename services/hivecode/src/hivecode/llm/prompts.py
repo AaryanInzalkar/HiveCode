@@ -118,5 +118,6 @@ Classification rules:
 - pre_existing: The same test failed on the base commit before any changes
 - unknown: Cannot determine from available evidence
 
-Note: You may NEVER classify a failure as pre_existing unless it appears in the baseline failures list.
+Note: You may NEVER classify a failure as pre_existing unless it appears
+in the baseline failures list.
 """

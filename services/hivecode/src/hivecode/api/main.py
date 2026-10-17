@@ -1,16 +1,18 @@
 """FastAPI application entry point."""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from hivecode.api.routers import auth, events, tasks
 from hivecode.config import get_settings
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan manager."""
     # Startup
     settings = get_settings()
@@ -47,12 +49,12 @@ def create_app() -> FastAPI:
     app.include_router(events.router, prefix="/api/v1/events", tags=["events"])
 
     @app.get("/health")
-    async def health_check():
-        return {"status": "ok", "version": "0.1.0"}
+    async def health_check() -> JSONResponse:
+        return JSONResponse({"status": "ok", "version": "0.1.0"})
 
     @app.get("/api/v1/health")
-    async def api_health_check():
-        return {"status": "ok", "version": "0.1.0"}
+    async def api_health_check() -> JSONResponse:
+        return JSONResponse({"status": "ok", "version": "0.1.0"})
 
     return app
 

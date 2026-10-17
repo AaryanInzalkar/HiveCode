@@ -13,7 +13,7 @@ from hivecode.workflow.state import WorkflowState
 class WorkflowRunner:
     """Runs the workflow for a single task."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.graph = create_workflow_graph()
 
     async def run(self, task_id: UUID) -> dict:

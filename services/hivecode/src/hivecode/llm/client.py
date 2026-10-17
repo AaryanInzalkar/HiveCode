@@ -46,14 +46,14 @@ class LLMResult:
 class LLMClient(Protocol):
     """Protocol for LLM clients."""
 
-    def generate(
+    async def generate(
         self,
         *,
         role: Role,
         messages: list[dict[str, str]],
         response_model: type[BaseModel] | None = None,
         tools: list[dict] | None = None,
-        budget: CallBudget = CallBudget(),
+        budget: CallBudget | None = None,
     ) -> LLMResult:
         ...
 
@@ -74,9 +74,10 @@ class GeminiClient:
         messages: list[dict[str, str]],
         response_model: type[BaseModel] | None = None,
         tools: list[dict] | None = None,
-        budget: CallBudget = CallBudget(),
+        budget: CallBudget | None = None,
     ) -> LLMResult:
         """Generate a response from Gemini."""
+        budget = budget or CallBudget()
         start = time.monotonic()
 
         # Convert messages to Gemini format
@@ -98,10 +99,22 @@ class GeminiClient:
 
         # Add system instruction for role
         system_prompts = {
-            Role.ANALYST: "You are a software debugging analyst. Analyze code, identify root causes, and propose fix plans. Be precise and evidence-based.",
-            Role.CODER: "You are a software engineer. Generate minimal, focused code fixes. Only modify files within the authorized scope.",
-            Role.REVIEWER: "You are a code reviewer. Review changes for correctness, regressions, and scope violations. Be thorough and skeptical.",
-            Role.FAILURE_ANALYST: "You are a failure analysis expert. Classify test failures as patch_related, environmental, or pre_existing based on evidence.",
+            Role.ANALYST: (
+                "You are a software debugging analyst. Analyze code, identify root causes, "
+                "and propose fix plans. Be precise and evidence-based."
+            ),
+            Role.CODER: (
+                "You are a software engineer. Generate minimal, focused code fixes. "
+                "Only modify files within the authorized scope."
+            ),
+            Role.REVIEWER: (
+                "You are a code reviewer. Review changes for correctness, regressions, "
+                "and scope violations. Be thorough and skeptical."
+            ),
+            Role.FAILURE_ANALYST: (
+                "You are a failure analysis expert. Classify test failures as patch_related, "
+                "environmental, or pre_existing based on evidence."
+            ),
         }
 
         if role in system_prompts:
@@ -154,7 +167,7 @@ class GeminiClient:
             prompt_version="v1",
         )
 
-    async def close(self):
+    async def close(self) -> None:
         await self._client.aclose()
 
 
@@ -174,7 +187,7 @@ class ReplayClient:
         messages: list[dict[str, str]],
         response_model: type[BaseModel] | None = None,
         tools: list[dict] | None = None,
-        budget: CallBudget = CallBudget(),
+        budget: CallBudget | None = None,
     ) -> LLMResult:
         """Return a recorded response."""
         key = f"{role.value}:{len(messages)}"

@@ -50,14 +50,18 @@ class GitHubGateway(Protocol):
 
     async def resolve_ref(self, repo: RepoRef, ref: str) -> str: ...
     async def fetch_archive(self, repo: RepoRef, sha: str) -> bytes: ...
-    async def push_branch(self, repo: RepoRef, name: str, base_sha: str, patch: bytes) -> BranchRef: ...
-    async def open_pull_request(self, repo: RepoRef, head: str, base: str, title: str, body: str, draft: bool) -> PullRequest: ...
+    async def push_branch(
+        self, repo: RepoRef, name: str, base_sha: str, patch: bytes
+    ) -> BranchRef: ...
+    async def open_pull_request(
+        self, repo: RepoRef, head: str, base: str, title: str, body: str, draft: bool
+    ) -> PullRequest: ...
 
 
 class GitHubAppGateway:
     """GitHub App gateway using installation tokens."""
 
-    def __init__(self, app_id: str, private_key: str):
+    def __init__(self, app_id: str, private_key: str) -> None:
         self.app_id = app_id
         self.private_key = private_key
         self._client = httpx.AsyncClient(
@@ -72,7 +76,7 @@ class GitHubAppGateway:
 
     def _generate_jwt(self) -> str:
         """Generate a GitHub App JWT for authentication."""
-        import jwt  # PyJWT
+        import jwt  # type: ignore[import-untyped]  # PyJWT
 
         now = int(time.time())
         payload = {
@@ -87,7 +91,7 @@ class GitHubAppGateway:
             password=None,
         )
 
-        return jwt.encode(payload, key, algorithm="RS256")
+        return str(jwt.encode(payload, key, algorithm="RS256"))
 
     async def _get_installation_token(self, installation_id: int) -> str:
         """Get or refresh an installation token."""
@@ -106,7 +110,7 @@ class GitHubAppGateway:
         response.raise_for_status()
         data = response.json()
 
-        token = data["token"]
+        token = str(data["token"])
         expires_at = time.time() + 3600  # 1 hour
         self._installation_tokens[installation_id] = (token, expires_at)
 
@@ -119,14 +123,14 @@ class GitHubAppGateway:
             f"/repos/{repo.full_name}/git/ref/heads/{ref}"
         )
         if response.status_code == 200:
-            return response.json()["object"]["sha"]
+            return str(response.json()["object"]["sha"])
 
         # Try tag
         response = await self._client.get(
             f"/repos/{repo.full_name}/git/ref/tags/{ref}"
         )
         if response.status_code == 200:
-            return response.json()["object"]["sha"]
+            return str(response.json()["object"]["sha"])
 
         raise ValueError(f"Could not resolve ref '{ref}' in {repo.full_name}")
 
@@ -139,7 +143,9 @@ class GitHubAppGateway:
         response.raise_for_status()
         return response.content
 
-    async def push_branch(self, repo: RepoRef, name: str, base_sha: str, patch: bytes) -> BranchRef:
+    async def push_branch(
+        self, repo: RepoRef, name: str, base_sha: str, patch: bytes
+    ) -> BranchRef:
         """Push a branch with a patch applied."""
         # Create a new tree with the patch
         # This is a simplified version — full implementation would:
@@ -159,7 +165,7 @@ class GitHubAppGateway:
             },
         )
         response.raise_for_status()
-        commit_sha = response.json()["sha"]
+        commit_sha = str(response.json()["sha"])
 
         # Create branch
         response = await self._client.post(
@@ -191,15 +197,15 @@ class GitHubAppGateway:
         data = response.json()
 
         return PullRequest(
-            number=data["number"],
-            url=data["html_url"],
+            number=int(data["number"]),
+            url=str(data["html_url"]),
             head_branch=head,
-            head_sha=data["head"]["sha"],
-            base_sha=data["base"]["sha"],
+            head_sha=str(data["head"]["sha"]),
+            base_sha=str(data["base"]["sha"]),
             draft=draft,
         )
 
-    async def close(self):
+    async def close(self) -> None:
         await self._client.aclose()
 
 

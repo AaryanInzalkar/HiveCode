@@ -25,9 +25,9 @@ class RedactingFilter(logging.Filter):
             record.msg = self._redact_dict(record.msg)
         return True
 
-    def _redact_dict(self, data: dict) -> dict:
+    def _redact_dict(self, data: dict[str, Any]) -> dict[str, Any]:
         """Recursively redact sensitive keys."""
-        redacted = {}
+        redacted: dict[str, Any] = {}
         for key, value in data.items():
             if any(pattern in key.lower() for pattern in self.SENSITIVE_PATTERNS):
                 redacted[key] = "***REDACTED***"
@@ -66,7 +66,7 @@ def setup_logging(log_level: str = "INFO") -> None:
 class StructuredLogger:
     """Structured JSON logger with context."""
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.logger = logging.getLogger(name)
 
     def _log(self, level: str, message: str, **context: Any) -> None:

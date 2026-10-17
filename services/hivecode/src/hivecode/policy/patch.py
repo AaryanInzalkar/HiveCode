@@ -119,7 +119,9 @@ def _compute_tree_sha(workspace: Path) -> str:
     return hasher.hexdigest()[:40]
 
 
-def restore_test_files(workspace: str, test_files: dict[str, str], base_content: dict[str, str]) -> list[str]:
+def restore_test_files(
+    workspace: str, test_files: dict[str, str], base_content: dict[str, str]
+) -> list[str]:
     """Restore test files to their base-commit content.
 
     Prevents a patch that passes by weakening or deleting tests (WF-14).

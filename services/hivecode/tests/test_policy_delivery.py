@@ -70,4 +70,9 @@ class TestShouldCreatePR:
 
     def test_blocking_finding_with_approval(self):
         config = DeliveryConfig(mode=DeliveryMode.PR)
-        assert should_create_pr("verified", config, has_blocking_finding=True, approval_granted=True) is True
+        assert (
+            should_create_pr(
+                "verified", config, has_blocking_finding=True, approval_granted=True
+            )
+            is True
+        )

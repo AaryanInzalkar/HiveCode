@@ -26,7 +26,7 @@ class ClassificationResult:
 class FailureClassifier:
     """Classifies test failures using rules first, LLM for ambiguous cases."""
 
-    def __init__(self, llm_client: LLMClient | None = None):
+    def __init__(self, llm_client: LLMClient | None = None) -> None:
         self.llm_client = llm_client
 
     async def classify(
@@ -53,7 +53,7 @@ class FailureClassifier:
             )
 
         # LLM-assisted classification for unknown cases
-        if self.llm_client:
+        if self.llm_client is not None:
             llm_result = await self._classify_with_llm(
                 failure, baseline_failures, edited_files
             )
@@ -75,6 +75,7 @@ class FailureClassifier:
         edited_files: list[str],
     ) -> ClassificationResult:
         """Use the failure analyst LLM to classify an unknown failure."""
+        assert self.llm_client is not None
         # Build context
         baseline_list = "\n".join(
             f"- {bf.test_id}: {bf.message}" for bf in baseline_failures
@@ -112,7 +113,7 @@ Classify this failure.""",
             response_model=FailureClassificationSchema,
         )
 
-        if result.parsed:
+        if result.parsed and isinstance(result.parsed, FailureClassificationSchema):
             schema = result.parsed
             failure_class = FailureClass(schema.classification)
             return ClassificationResult(

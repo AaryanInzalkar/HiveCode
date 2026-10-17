@@ -2,6 +2,7 @@
 
 import time
 import uuid
+from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -11,7 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Add security headers to all responses."""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
         response = await call_next(request)
 
         response.headers["X-Content-Type-Options"] = "nosniff"
@@ -26,7 +27,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 class CorrelationIdMiddleware(BaseHTTPMiddleware):
     """Attach a correlation ID to every request."""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
         correlation_id = request.headers.get("X-Correlation-ID", str(uuid.uuid4()))
         request.state.correlation_id = correlation_id
 
@@ -39,7 +40,7 @@ class CorrelationIdMiddleware(BaseHTTPMiddleware):
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """Log request timing and outcome."""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
         start = time.monotonic()
         response = await call_next(request)
         duration_ms = (time.monotonic() - start) * 1000
@@ -56,7 +57,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     """Convert unhandled exceptions to problem+json responses."""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request: Request, call_next: Any) -> Any:
         try:
             return await call_next(request)
         except Exception:

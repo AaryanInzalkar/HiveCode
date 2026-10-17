@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,7 +43,7 @@ def _hash_token(token: str) -> bytes:
 
 
 @router.get("/status", response_model=AuthStatusResponse)
-async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
+async def auth_status(request: Request, db: AsyncSession = Depends(get_db)) -> AuthStatusResponse:  # noqa: B008
     """Check authentication status."""
     settings = get_settings()
     token = request.cookies.get(settings.session_cookie_name)
@@ -82,7 +83,7 @@ async def auth_status(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/me", response_model=MeResponse)
-async def get_me(request: Request, db: AsyncSession = Depends(get_db)):
+async def get_me(request: Request, db: AsyncSession = Depends(get_db)) -> MeResponse:  # noqa: B008
     """Get current user and CSRF secret."""
     settings = get_settings()
     token = request.cookies.get(settings.session_cookie_name)
@@ -122,7 +123,9 @@ async def get_me(request: Request, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/logout")
-async def logout(request: Request, response: Response, db: AsyncSession = Depends(get_db)):
+async def logout(
+    request: Request, response: Response, db: AsyncSession = Depends(get_db)  # noqa: B008
+) -> JSONResponse:
     """Sign out — revoke session and clear cookie."""
     settings = get_settings()
     token = request.cookies.get(settings.session_cookie_name)
@@ -144,4 +147,4 @@ async def logout(request: Request, response: Response, db: AsyncSession = Depend
         httponly=True,
         samesite="lax",
     )
-    return {"status": "ok"}
+    return JSONResponse({"status": "ok"})

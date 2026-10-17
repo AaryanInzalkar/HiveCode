@@ -166,7 +166,9 @@ class TestComputePartiallyVerified:
 class TestVerdictNeverFalselyVerified:
     """Property: a failed mandatory check always implies not Verified."""
 
-    @pytest.mark.parametrize("status", [CheckStatus.FAILED, CheckStatus.ERROR, CheckStatus.TIMED_OUT])
+    @pytest.mark.parametrize(
+        "status", [CheckStatus.FAILED, CheckStatus.ERROR, CheckStatus.TIMED_OUT]
+    )
     def test_failed_mandatory_never_verified(self, status):
         evidence = Evidence(
             check_results=[

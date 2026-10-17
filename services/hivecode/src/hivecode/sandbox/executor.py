@@ -83,7 +83,7 @@ class SandboxExecutor:
             duration_ms = int((time.monotonic() - start) * 1000)
 
             # Parse result
-            parsed = self._parse_result(check.check_id, result, duration_ms)
+            parsed = self._parse_result(check.check_key, result, duration_ms)
 
             return {
                 "check_key": check.check_key,
